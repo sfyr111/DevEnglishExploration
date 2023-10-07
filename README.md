@@ -28,7 +28,7 @@ This repository is licensed under the [MIT License](LICENSE).
 
 ## Contact 📫
 
-- Your Name
+- Ryan
 - [coolheadedyang@gmail.com](mailto:coolheadedyang@gmail.com)
 
 🚀 Let’s embark on this journey of exploring technical knowledge through the beautiful lens of the English language together!
