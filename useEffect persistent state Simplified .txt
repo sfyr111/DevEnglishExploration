@@ -1,0 +1,21 @@
+# useEffect Simplified
+
+## Simplified
+
+**Title**: Optimizing Local Storage Use with `useEffect` and Custom Hooks in React
+
+**Main Points**:
+1. Using `useEffect` for local storage interaction
+2. Minimizing `useEffect` runs for better performance
+3. Creating `useLocalStorageState` for easy state and local storage sync
+
+**Description/Examples**:
+- **Using `useEffect`**: We save text input to local storage using `useEffect`, so if we type "Bob" and refresh the page, "Bob" shows up again because it’s saved and loaded from local storage.
+- **Optimizing `useEffect`**: We use a dependency array in `useEffect` to make sure it only runs when needed, like when the `name` state changes, which avoids unnecessary work and improves performance.
+- **Using `useLocalStorageState`**: We made a custom hook, `useLocalStorageState`, that takes a key and default value, gives back state and a setter, and lets us reuse logic easily in different components.
+
+**Conclusion**:
+`useEffect` allows React components to interact with things like local storage efficiently when we use dependency arrays. Creating custom hooks, like `useLocalStorageState`, helps us use complex logic in an easier, reusable way across our app.
+
+**My Thoughts**:
+This approach is effective for managing side effects and external interactions in React. Using custom hooks simplifies code, makes complex logic more modular, and is good for managing and reusing code in React apps.
