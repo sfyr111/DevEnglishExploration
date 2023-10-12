@@ -1,0 +1,19 @@
+Title/Theme: Using Vanilla Tilt Effects and Changing Components with React Hooks
+
+Key Points:
+
+Using Vanilla Tilt, a simple JavaScript library, to make appealing visual effects by working directly with the DOM.
+Using React’s useRef and useEffect hooks to manage the DOM node in a straightforward way.
+Managing possible memory leaks by using cleanup functions in useEffect.
+Changing from class components to function components using hooks and managing the component's lifecycle in a clear way.
+Detailed Descriptions/Examples:
+
+For the first key point: Vanilla Tilt, a JavaScript library, gives a nice visual effect by working with the DOM and setting event handlers. It’s useful to understand how the library works with the DOM before starting.
+For the second key point: We achieve the Vanilla Tilt effect by creating a ref with React’s useRef to get the DOM node. After applying the ref to our div, we can check it in the development tools and see it matches our tilt route div, with React managing this reference for side effects.
+For the third key point: It's vital to think about possible memory leaks. When our tilt effect is removed from the page, we want to make sure the DOM node is not kept longer than needed due to Vanilla Tilt’s event handlers. So, a cleanup function is added in our useEffect to get rid of any leftover effects and avoid memory problems.
+For the fourth key point: Moving from a class component to a function component using hooks involves using useRef and useEffect to handle component setup and cleanup. Keeping the code clean and organized is key to avoid confusion and ensure a smooth change from class to function components.
+Conclusion/Summary:
+When working directly with the DOM, especially when using external libraries like Vanilla Tilt, using React's useRef and useEffect ensures a smooth and efficient way to implement and manage side effects. Making sure the app is free from possible memory leaks and changing from class to function components using hooks shows a modern, efficient approach to development.
+
+My Thoughts/Opinions:
+Using Vanilla Tilt within a React environment shows how you can use an external library and React’s efficient state management through hooks together. Creating nice visual effects while making sure the logic behind the scenes stays clean, efficient, and working well shows the ability and flexibility of React. Paying attention to possible memory leaks is very important for keeping performance high and shows the thought needed in real development work. Moving to function components using hooks also shows the ongoing change and simplification in code structure while keeping strong functionality.

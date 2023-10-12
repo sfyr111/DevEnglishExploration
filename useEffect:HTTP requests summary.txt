@@ -1,0 +1,13 @@
+**HTTP Requests and Error Handling in React**
+
+We're diving into making HTTP requests in React. To initiate this, we'll first design the user interface (UI) and then add the required functionalities. We will manage two primary states: `pokemon` and `pokemonName`. Based on these states, we'll show different displays such as prompting the user to submit a Pokémon, showing a loading state, or displaying Pokémon data.
+
+For fetching data, we'll utilize the `useEffect` hook, which will run every time the `pokemonName` changes. If a Pokémon name is given, we'll fetch its data. However, if a user tries to fetch a non-existing Pokémon and then a valid one, the UI doesn't always update correctly. This is because once an error occurs, the UI sticks to displaying the error.
+
+To resolve this, we can use the 'status' state to clearly define the UI's current condition. This state can be 'idle', 'pending', 'rejected', or 'resolved', determining if the user should be prompted, shown a loading state, displayed an error, or shown the Pokémon data, respectively.
+
+Another approach is to use a single state object to manage multiple state values, ensuring all state values are updated simultaneously, avoiding potential issues with asynchronous state updates.
+
+Error boundaries in React catch errors in components and display a fallback UI. Currently, they require class components, but the `react-error-boundary` library provides a more straightforward implementation. By using this library and its `resetKeys` feature, we can automatically reset the error boundary when specific conditions, like a change in Pokémon name, occur, ensuring a smooth user experience.
+
+In conclusion, making HTTP requests in React and handling errors effectively ensures a seamless user experience. Using tools like `useEffect` and libraries like `react-error-boundary` simplifies the process, making it more efficient and user-friendly.

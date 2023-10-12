@@ -1,0 +1,223 @@
+We're about to delve into making HTTP requests. Virtually all valuable applications interact with a backend, which is a side effect. Thus, we use useEffect for this. I've provided some background on its nuances, so do explore that. When working with asynchronous operations in useEffect, there's a specific way I prefer, but you're free to choose your method.
+
+For this exercise, we'll request data on Pokémon. In the final version, you can search for Pokémon like Pikachu, Mewtwo, or Ditto, and view their details. I've added buttons as examples for easier access. Your main focus will be on the pokemonInfo function component, which makes the request. The display part, pokemonDataView, is already set up for you.
+
+There's additional work available: handling errors, using a status for loading, storing state in an object, and using error boundaries. Specifically, error boundaries are class components, which might be a new concept for some. They're essential, and hopefully, React might offer non-class alternatives in the future.
+
+Dive in, explore, and I'll catch up with you post-exercise.
+
+We're about to make HTTP requests in React. I start by sketching out the UI, then add interactivity. We'll manage two states: pokemon and pokemonName. If there's no pokemonName, we'll display "submit pokemon". If we have a pokemonName but no pokemon, we'll show a loading state. To make the request, we'll use the useEffect hook, which synchronizes our app's state with external data. This effect runs whenever pokemonName changes.
+
+Initially, there's no pokemonName, so the effect does nothing. If there is, we call fetchPokemon to get data based on the pokemonName. After fetching, we update our state. One issue I noticed is the persistence of the previous Pokémon's data during a new fetch. To show a loading state, I reset the pokemon to null before fetching.
+
+In summary, our component, pokemonInfo, displays different content based on the available data. Using useEffect, we manage data fetching and update our state accordingly, ensuring an accurate display.
+
+We're diving into making HTTP requests in React. First, I design the UI and then integrate the desired functionalities. Here's the plan:
+
+State Management: We'll manage a pokemon state, initially set to null. Based on its value, we'll render different UI components.
+Pokemon Name State: If there's no pokemonName, we'll prompt the user to "submit a pokemon". If there's a pokemonName but no pokemon, we'll show a loading state. Once both exist, we'll display the Pokémon's data.
+Data Fetching with useEffect: Upon receiving a pokemonName, we'll initiate an HTTP request. The useEffect hook will manage this, running whenever the pokemonName changes. If there's no pokemonName, the effect exits early. Otherwise, it fetches the Pokémon's data and updates the state.
+Rendering Optimization: I noticed a delay in the loading state when selecting a new Pokémon. To address this, before fetching new data, I reset the pokemon state to null, ensuring the loading state is visible.
+Review: Our component pokemonInfo accepts a pokemonName and renders accordingly. We use useEffect to synchronize our app's state (pokemonName) with external data, fetching the Pokémon details. With a successful fetch, the component re-renders to show the Pokémon's data.
+
+Using a Status State in React
+
+Problem: When trying to fetch a non-existent 'blob' Pokémon, and then trying to fetch 'Pikachu', the UI doesn't update as expected. The underlying issue is once an error is set, it always returns the error UI.
+
+Solution: Use a 'status' state to clearly define the component's state at any time.
+
+Setting Up Status: Introduce a new variable called status with initial value 'idle'.
+
+Using Status for Rendering:
+
+If status is 'idle', prompt user to "submit a Pokémon".
+If status is 'pending', show loading state.
+If status is 'rejected', display the error UI.
+If status is 'resolved', present the Pokémon data.
+Updating Status:
+
+Before a request, set the status to 'pending'.
+Upon successful data retrieval, set pokemon and update status to 'resolved'.
+For errors, set the error and update status to 'rejected'.
+Benefits:
+
+Helps in avoiding bugs by clearly defining the component's state.
+Makes the code more maintainable and easier to reason about.
+Conclusion: Using a 'status' variable clarifies the component's current situation, reduces bugs, and simplifies the code.
+
+
+Using Object State in React
+
+Problem: When updating the status before setting the data, the application crashes. This is because React re-renders the component once the status changes, even before the data is set, leading to issues.
+
+Solution: Use a single state object to manage multiple state values.
+
+Steps:
+
+Initialization:
+
+Define a single state object with properties for status, pokemon, and error.
+Initialize status to 'idle', and both pokemon and error to null.
+Destructuring State:
+
+Instead of referencing the entire state object everywhere, destructure the needed properties directly. This makes the code cleaner and more readable.
+Updating State:
+
+Use a single setState function to update the state object.
+When setting the status to 'pending', update only the status property.
+For a successful data fetch, update the status to 'resolved' and set the pokemon data.
+For an error, set the status to 'rejected' and update the error property.
+Implication:
+
+Using a single state object ensures that multiple state values are updated together in a single render cycle, preventing potential issues.
+However, be aware that updating the state object replaces its entire content. So, if you only update one property, the others will be lost.
+Conclusion:
+
+Storing state in a single object can help avoid bugs related to asynchronous state updates.
+It's not always necessary to use this approach, but it's helpful to be aware of potential issues with asynchronous state updates.
+In the future, the useReducer hook might be a more appropriate solution for such cases.
+
+**Understanding Error Boundaries in React**
+
+**Concept**: Error boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the crashed component tree.
+
+**Key Takeaways**:
+
+1. **Class Component Requirement**: As of now, error boundaries need to be class components. This might change in future React versions.
+
+2. **Implementation**:
+    - Create a class component, `ErrorBoundary`, that extends `React.Component`.
+    - Implement the static method `getDerivedStateFromError` which gets triggered when there's an error in its child components. This method sets the state with the error encountered.
+    - In the `render` method, based on the error state, either render the children (if no error) or render a fallback UI (if there's an error).
+
+3. **Usage**:
+    - Wrap any component (like `PokemonInfo`) with the `ErrorBoundary` component.
+    - If any error occurs inside `PokemonInfo` (or any of its children), the error boundary will catch it and render the fallback UI.
+
+4. **Flexibility with Fallback**:
+    - Instead of hardcoding the fallback UI inside the error boundary, it's a good idea to accept a fallback component via props. This makes the error boundary more reusable as different parts of the app might require different fallback UIs.
+
+5. **Placement Matters**:
+    - Where you place the error boundary determines how much of your UI gets replaced by the fallback when an error occurs. For instance, if you wrap your entire app with one error boundary, an error anywhere will replace the entire app's UI with the fallback UI. It's often better to use multiple, strategically placed error boundaries for finer-grained error handling.
+
+6. **Resetting State**:
+    - The example showed how setting the state in a certain order can lead to errors. By using a single state object, you can ensure that all the related state updates happen together, preventing such issues.
+
+7. **Why Use Error Boundaries**:
+    - Even with tools like TypeScript, runtime errors can still occur. Error boundaries ensure that when such errors happen, they don't lead to a broken user experience. Instead, users see a friendly error message.
+
+**In Conclusion**:
+
+Error boundaries provide a way to gracefully handle errors in React applications, ensuring a better user experience. While it requires the use of a class component, it offers a powerful way to catch and display errors in a user-friendly manner.
+
+**Understanding Remounting with the Key Prop in React**
+
+**Concept**: The `key` prop in React is typically associated with helping React identify which items have changed, are added, or are removed in lists. However, it can also be used to force a component to "reset" by remounting it, which can be particularly useful in certain scenarios like with error boundaries.
+
+**Key Takeaways**:
+
+1. **The Issue**: If there's an error in a component wrapped by an error boundary, the error boundary will catch the error and render a fallback UI. But, if the underlying issue causing the error isn't addressed, the error boundary will continue to show the fallback UI, even if other props change.
+
+2. **Using the Key Prop**: Changing the `key` prop of a component effectively tells React that it's a new component. This causes React to unmount the old component (with its state and effects) and mount it anew, resetting its internal state.
+
+3. **Scenario with Pokemon**:
+    - When selecting a valid Pokemon (e.g., Pikachu), the component fetches and displays data.
+    - If there's a typo or a non-existent Pokemon name, an error occurs, and the error boundary catches it, showing an error message.
+    - Without using the `key` prop, if the user then selects a valid Pokemon after an error, the error boundary wouldn't reset, and the error message would still display, even though there's no current error.
+    - To fix this, the `key` prop is set to the Pokemon name. When the Pokemon name changes, the component is forced to remount, resetting the error boundary.
+
+4. **Advantages**:
+    - Ensures a fresh start: Each time the `key` changes, the component starts afresh with no previous state or errors.
+    - Offers a simple way to handle errors without complex state management within the error boundary.
+
+5. **Caveats**:
+    - Overuse: It's important not to overuse this approach as remounting components can be expensive in terms of performance.
+    - Proper State Management: Often, it's better to handle state updates more explicitly. This trick is useful in specific scenarios but isn't a one-size-fits-all solution.
+
+**In Conclusion**:
+
+The `key` prop in React offers more than just helping with lists. In specific scenarios, like with error boundaries, it can be a handy tool to reset a component's state and effects by forcing a remount. However, it's essential to use it judiciously and understand its implications on component lifecycle and performance.
+
+**Understanding the Use of `react-error-boundary`**
+
+**Concept**: Error boundaries in React are components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the component tree that crashed. By default, React does not provide a built-in error boundary component. Developers have to create class components to handle this. However, the `react-error-boundary` library offers a ready-made solution for this.
+
+**Key Takeaways**:
+
+1. **Ease of Use**: The `react-error-boundary` library simplifies the process of implementing error boundaries in React applications. Instead of writing your own class component to handle errors, you can use the library's `ErrorBoundary` component.
+
+2. **Consistent API**: If you've built an error boundary using a class component with the same API as `react-error-boundary`, switching to the library is seamless.
+
+3. **Benefits**:
+    - **No Need for Class Components**: With the library, you can avoid writing class components altogether, sticking to function components and hooks throughout your application.
+    - **Additional Features**: The library provides extra functionalities and customization options beyond just catching errors.
+
+4. **Implementation**:
+    - Simply install the library (`npm install react-error-boundary` or `yarn add react-error-boundary`).
+    - Replace your custom error boundary component with the imported `ErrorBoundary` from `react-error-boundary`.
+    - Use it in the same way you used your custom error boundary. The children that you want to be protected by the error boundary should be wrapped inside the `ErrorBoundary` component.
+
+5. **Recovery**: Just like custom error boundaries, the `react-error-boundary` allows the application to recover from errors, ensuring that users don't see a broken interface.
+
+6. **Flexibility**: The `react-error-boundary` library is designed to work seamlessly with various applications and aligns well with best practices for error handling in React.
+
+**In Conclusion**:
+
+Using the `react-error-boundary` library offers a streamlined approach to handling errors in React applications. It's a robust solution that saves developers the time and effort of creating custom error boundaries. The library is particularly beneficial for those who prefer to work exclusively with function components and hooks, allowing them to maintain consistency in their codebase.
+
+**Understanding the Reset of Error Boundaries in React**
+
+**Concept**: The main idea here is about efficiently handling errors in React components. In the given context, the error boundary is used to catch and display errors, but it has a minor issue: every time the Pokémon name changes, the entire component unmounts and remounts. This is not ideal as it can lead to inefficiencies and undesired visual flashes in the UI.
+
+**Key Takeaways**:
+
+1. **The Issue**: A brief flash of the "submit a Pokémon" message appears when selecting a Pokémon name due to the error boundary being remounted every time the Pokémon name changes.
+
+2. **Initialization Fix**: One way to fix this is by initializing the component status based on whether there's a Pokémon name or not. If there is, set the status to 'pending', otherwise set it to 'idle'. This prevents the flash of the "submit a Pokémon" message.
+
+3. **Deep Dive**: The core problem is the unnecessary unmounting and remounting of the component every time the Pokémon name changes. This is inefficient and can lead to other issues down the line.
+
+4. **Using `react-error-boundary` Features**:
+    - The `ErrorBoundary` from `react-error-boundary` gives additional props to the fallback component, including `resetErrorBoundary`.
+    - By adding a "Try Again" button that invokes `resetErrorBoundary`, we can manually reset the error boundary without needing to remount the component.
+    - The library also supports an `onReset` prop, which can be used to run additional logic when the error boundary is reset.
+
+5. **Efficient Error Handling**:
+    - By removing the key prop and using the built-in reset mechanism of `react-error-boundary`, you can prevent unnecessary re-renders.
+    - The `onReset` prop allows further customization of the reset behavior, in this case, resetting the Pokémon name input.
+
+6. **In Conclusion**:
+    - Error boundaries are crucial for improving the user experience by gracefully handling errors.
+    - With `react-error-boundary`, developers get a powerful tool that simplifies error handling, making it more intuitive and efficient.
+    - By understanding and using the provided APIs, it's possible to create a smooth error handling flow that doesn't disrupt the user experience.
+
+    **Understanding Resetting Error Boundaries in React**
+
+    **Concept**: The topic here centers on refining the user experience when dealing with errors in React components. Specifically, it's about automatically resetting the error boundary when certain conditions are met, so the user doesn't have to manually intervene.
+
+    **Key Takeaways**:
+
+    1. **Issue**: Previously, when the error state was managed internally by the Pokémon info component, selecting a new Pokémon automatically recovered from an error state. But with the error state now managed externally by the error boundary, this automatic recovery behavior is lost.
+
+    2. **Desired Behavior**: The objective is to allow the user to either:
+        - Select a new Pokémon to automatically recover from an error state, or
+        - Click on a "Try Again" button to manually reset and attempt to load a Pokémon.
+
+    3. **Using `resetKeys` in `react-error-boundary`**:
+        - The `ErrorBoundary` component from `react-error-boundary` accepts a prop called `resetKeys`.
+        - `resetKeys` is an array of values. When any of these values change, the error boundary resets itself.
+        - By setting `resetKeys` to an array containing the Pokémon name, the error boundary will reset whenever the Pokémon name changes.
+
+    4. **Benefits**:
+        - This approach restores the earlier behavior where changing the Pokémon name automatically recovered from an error state.
+        - It provides a seamless experience for the user, allowing them to either manually reset the error state or simply select a different Pokémon to automatically reset it.
+        - This approach leverages the power of error boundaries to handle both asynchronous and synchronous errors.
+
+    5. **Runtime Errors**: It's essential to note that while error boundaries enhance user experience by preventing crashes, they don't eliminate the root cause of errors. For example, passing null values will repeatedly trigger the same runtime error. The ultimate solution is to fix the underlying code.
+
+    6. **In Conclusion**:
+        - Error boundaries in React are powerful tools that significantly improve user experience by preventing crashes and providing meaningful error messages.
+        - With the added flexibility of `resetKeys`, developers can further refine the error recovery process, making it even more intuitive for users.
+        - While error boundaries are great for handling errors gracefully, it's equally important to address and fix the root causes of errors in the code.
+
+
