@@ -1,0 +1,142 @@
+**Exploring `useCallback` in React**
+
+In this segment, we'll delve into the `useCallback` hook in React, which comes in handy when creating custom hooks.
+
+Custom hooks often require the use of memoization techniques, such as `useCallback`. This hook is especially useful in situations where performance optimizations are needed to prevent unnecessary re-renders or recalculations, especially when passing callbacks to child components.
+
+However, it's crucial to understand when and where to use `useCallback`. Overusing it or using it in the wrong context can introduce unnecessary complexity or even negatively impact performance. It's recommended to read through the provided resources to gain a deeper insight into its use cases and potential pitfalls. Notably, there's a blog post that specifically addresses the common misconception of using `useCallback` everywhere, advocating for a more strategic application.
+
+The exercise provided offers a practical experience with `useCallback`. The scenario features an app with a familiar character, Pikachu. The initial implementation uses the `useReducer` hook, and the goal is to refactor parts of the app into a custom hook. During this refactoring process, challenges related to dependencies and asynchronous operations will arise, hinting at the need for memoization.
+
+To address these challenges, the extra credit section guides the learner to employ `useCallback`. This will simplify the dependencies and make the asynchronous flow more manageable. Subsequent extra credits present further opportunities to optimize and refine the solution.
+
+In conclusion, while `useCallback` is a powerful tool in the React developer's arsenal, it's essential to use it judiciously. This exercise aims to provide hands-on experience with the hook, emphasizing its benefits and potential pitfalls. After completing it, learners should have a better grasp of when and how to use `useCallback` effectively.
+
+**Understanding `useCallback` and Creating a Custom `useAsync` Hook in React**
+
+In this tutorial, we delve into creating a generic `useAsync` hook in React, which will help manage asynchronous operations within our applications. This hook will leverage the memoization capabilities of the `useCallback` hook to optimize performance.
+
+Here's a summary:
+
+1. **Starting Point**:
+   We began with a Pokémon info component that managed asynchronous state. The goal was to abstract this logic into a reusable hook.
+
+2. **Creating the `useAsync` Hook**:
+   - The `useAsync` hook was designed to be generic, making it adaptable for various asynchronous operations.
+   - It accepts three parameters:
+     - `asyncCallback`: the asynchronous function to be executed.
+     - `initialState`: initial state, allowing users to define the starting state.
+     - `dependencies`: an array of dependencies which will determine when the asynchronous function should be re-invoked.
+
+3. **Inside the Hook**:
+   - A `useEffect` is used to manage side effects. The `asyncCallback` is called within this effect.
+   - If the callback returns nothing, the effect exits early without further actions.
+   - If a promise is returned from the `asyncCallback`, event handlers are attached to handle success (`resolved` action type) and error (`rejected` action type) outcomes.
+
+4. **State Management**:
+   - The hook maintains an internal state to track the status of the asynchronous operation (e.g., `pending`, `resolved`, `rejected`).
+   - The `useAsync` hook encapsulates the logic of the asynchronous reducer, making it reusable across different components.
+
+5. **Refactoring Pokémon Info**:
+   - The logic initially present in the Pokémon info component was moved to the `useAsync` hook.
+   - Instead of directly managing the asynchronous state in the component, the `useAsync` hook was utilized.
+
+6. **Challenges**:
+   - One challenge was managing the dependencies of the `useEffect`. The dependencies array had to be passed to the custom hook to ensure the effect runs at the correct times.
+   - The static code analysis provided by the React hooks ESLint plugin posed challenges due to its inability to fully understand the custom hook's dependencies. This was addressed temporarily by disabling the ESLint warning, with plans to address it in a future lesson.
+
+7. **Conclusion**:
+   By abstracting the asynchronous logic into a custom `useAsync` hook, we've created a versatile and reusable tool that can be employed across different components in our React application. This encapsulation enhances code cleanliness, reusability, and maintainability.
+
+   **Review of `useCallback` for Asynchronous Operations in React**
+
+   In this discussion, we address how to use the `useCallback` hook in React to optimize and manage asynchronous operations more effectively.
+
+   **Key Takeaways**:
+
+   1. **Dependencies Challenge**:
+       - Initially, there was a challenge in managing the dependencies for our custom `useAsync` hook. The linter (ESLint) could not statically analyze these dependencies, leading to potential issues.
+       - This was problematic because missing or incorrect dependencies can introduce subtle bugs and unwanted re-renders.
+
+   2. **Introducing `useCallback`**:
+       - The `useCallback` hook in React allows you to memoize functions. This means the function doesn't get recreated every render unless certain dependencies change.
+       - By using `useCallback`, the function passed to the `useAsync` hook remains consistent until the dependencies (like `pokemonName`) change.
+
+   3. **Stabilizing the Callback**:
+       - The `useAsync` hook initially depended on the asynchronous callback. The problem was that this callback was being redefined on every render.
+       - By wrapping the callback in `useCallback`, it ensured that the function remains stable (doesn't get redefined) unless specific dependencies (like `pokemonName`) change.
+
+   4. **Benefits of `useCallback`**:
+       - Ensures a stable callback function, which leads to optimized renders.
+       - Helps in preventing unnecessary re-invocations of side effects or functions, improving performance.
+       - Works in tandem with hooks like `useEffect` to control when effects run.
+
+   5. **React's Guarantees**:
+       - While React's documentation suggests that `useCallback` might not always guarantee memoization, in practice, this isn't currently an issue. However, it's noted to ensure developers don't rely solely on this behavior and are aware that it could change in the future.
+
+   6. **Improved API**:
+       - While the current implementation with `useCallback` is a significant step forward in terms of optimization, there is always room for improvement. The discussion hints at further refining the API in subsequent lessons.
+
+   **Conclusion**:
+   Using `useCallback` in React, especially for asynchronous operations, can significantly enhance performance and ensure that functions remain stable across renders. By understanding and leveraging this hook, developers can build more efficient and reliable applications.
+
+   **Review of Improved `useAsync` Hook with `useCallback` in React**
+
+   In this segment, we deep dive into an improved approach for managing asynchronous operations in React using the `useAsync` hook. By redesigning its API and leveraging the power of `useCallback`, we aim to make the hook more intuitive and efficient.
+
+   **Key Points**:
+
+   1. **API Design Concerns**:
+       - Initially, the `useAsync` hook required a memoized callback to be passed, which could be error-prone. Users might overlook memoizing their callbacks, leading to suboptimal performance and unnecessary re-renders.
+       - This dependency on manual memoization of the callback wasn't ideal, as it made the API's "pit of success" quite narrow.
+
+   2. **Introducing the `run` Function**:
+       - To address this concern, the idea was to provide a `run` function from the `useAsync` hook, which the user can call with a promise. This approach ensures that the asynchronous logic is managed internally, while giving users flexibility on when and how they want to trigger the async operation.
+       - This design keeps the responsibility of memoization within the `useAsync` hook, thereby simplifying the external API.
+
+   3. **Refactoring `useAsync`**:
+       - The new `useAsync` hook no longer takes an async callback. Instead, it provides a `run` function.
+       - The `run` function accepts a promise. When called, it manages the asynchronous operation's status, handling success, error, and pending states.
+       - The `run` function is defined using `useCallback` to ensure it remains stable across renders unless its dependencies change.
+
+   4. **Benefits of the New API**:
+       - **Flexibility**: The `run` function can be triggered not just from effects (`useEffect`) but also from event handlers (like button clicks), making the hook more versatile.
+       - **Simplicity**: Users no longer need to worry about memoizing the function they pass to `useAsync`. This reduces the cognitive load and potential pitfalls.
+       - **Optimization**: By internally managing memoization, the hook ensures optimal performance and minimizes unnecessary re-renders.
+
+   5. **Conclusion**:
+       - The redesigned `useAsync` hook offers a more intuitive and efficient way to manage asynchronous operations in React. By shifting the responsibility of memoization and state management to the hook itself, it provides a cleaner and more user-friendly API, ensuring that common pitfalls are avoided.
+
+       **Ensuring Safety in Async Dispatches in React Components**
+
+       The topic discussed here pertains to a common pitfall in React applications where asynchronous actions attempt to update the state of a component that has unmounted. This can lead to warnings in the console, potential bugs, and may even hint at memory leaks.
+
+       **Highlights**:
+
+       1. **The Problem**:
+          - If a component initiates an asynchronous operation and then unmounts before the operation completes, attempting to update its state can cause React to throw a warning.
+          - This is because the component no longer exists in the React tree, and any state updates to it are invalid.
+
+       2. **Demonstration**:
+          - A scenario was provided where a component fetches Pokemon data. If the user navigates away before the fetch completes, and then the fetch completes later, React warns about a state update on an unmounted component.
+
+       3. **Solution - `useSafeDispatch`**:
+          - To mitigate this, a custom hook called `useSafeDispatch` was introduced.
+          - The hook leverages `useRef` to track the mount status of the component. When the component mounts, the ref is set to `true`, and when it unmounts, it's set to `false`.
+          - A memoized dispatch function is returned from `useSafeDispatch`, which checks the ref before calling the actual dispatch. If the component has unmounted (ref is `false`), it doesn't call the original dispatch.
+
+       4. **Refinements**:
+          - `useLayoutEffect` was introduced instead of `useEffect` for setting and clearing the mounted ref. This ensures that the ref value is set/cleared synchronously, making it more accurate in tracking the component's mount status.
+
+       5. **Implications**:
+          - By ensuring that state updates don't occur on unmounted components, we prevent unnecessary warnings and potential errors in our application.
+          - It's also a demonstration of how custom hooks can encapsulate complex logic and provide safer abstractions for common tasks.
+
+       6. **Caveats and Best Practices**:
+          - It was emphasized that not every function in a React component should be memoized using `useCallback`. This is because unnecessary memoization can introduce complexity and doesn't always provide a performance benefit.
+          - It's best to use memoization judiciously, especially when the function is being used as a dependency in effects or other hooks.
+
+       **Conclusion**:
+
+       Handling asynchronous operations safely in React components is crucial to prevent potential bugs and improve user experience. By understanding the component's lifecycle and using hooks like `useRef`, `useCallback`, and `useLayoutEffect`, developers can create robust solutions to common asynchronous challenges in React applications.
+

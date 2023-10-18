@@ -1,0 +1,61 @@
+**Exploring React's Context API**
+
+Context is a feature in React that facilitates sharing state among various components in a React tree. While it's primarily suited for libraries, it can also help application code resolve issues like prop drilling. Often, composition is the preferred approach to tackle these challenges, but context can be invaluable in certain scenarios, especially when building component libraries or other abstractions.
+
+In the advanced patterns section of Epic Reacts, you'll dive deeper into using context for more complex issues. A straightforward context usage example is provided to help understand its basics and the significance of default values.
+
+The exercise focuses on a single file for simplicity, even though, in real-world applications, you'd typically distribute the elements across multiple files. This streamlined approach ensures you don't have to navigate through multiple files during the exercise. Labels indicate where each element might typically reside in a more extensive setup.
+
+Your task is to make the increment count button function correctly, increasing the count displayed. The base exercise offers a simple version, followed by an extra credit section introducing enhancements.
+
+Another extra credit challenge will reintroduce the familiar Pokémon scenario, where you'll add caching. Using context, you'll enable seamless switching between Pokémon stored in the cache.
+
+Enjoy the exercise, and good luck!
+
+**Understanding React's Context for State Sharing**
+
+In React, context provides a way to share state across components without direct prop passing, making it a solution to prop drilling. While the easiest method to share state in our simple example would be combining components or moving the state to the parent component, we're using this structure for illustrative purposes.
+
+To utilize context:
+
+1. **Create Context**: Start by initializing a context using `React.createContext()` without a default value.
+
+2. **Create Provider Component**: Instead of using the context provider directly, it's often beneficial to create a dedicated provider component. This encapsulates the state and any related logic. For our example, we created a `CountProvider` component that returns the `CountContext.Provider`, which then wraps our main components.
+
+3. **Provide a Value**: Within the `CountProvider`, use the `useState` hook to manage the count state and its updater function. This state and updater are then provided as the value to the `CountContext.Provider`.
+
+4. **Consume the Context**: To use the provided context, components employ the `useContext` hook. This hook looks up the component tree, finds the nearest provider of the specified context, and grants access to its value. In our example, the `CountDisplay` and `Counter` components consume the `CountContext` to get the count value and the set count function, respectively.
+
+In summary, context in React allows components to implicitly share state. By creating a context, a provider component, and then consuming the context in child components, state can be seamlessly and efficiently shared across the component tree.
+
+**Implementing a Consumer Hook with React's Context**
+
+In React, using context improperly can lead to issues. For instance, if a component tries to consume context that isn't wrapped within its respective provider, errors can arise. The default error messages aren't always descriptive, making debugging challenging.
+
+To illustrate the problem: without the `CountProvider`, trying to consume the `CountContext` leads to an undefined context. This results in a vague error message, making it hard to pinpoint the issue. While a default context value can prevent the error, it doesn't address the root problem.
+
+A more helpful approach is to throw a descriptive error early. For instance, if there's no context, an error like "useCount must be used within the CountProvider" can be thrown, guiding developers towards the solution.
+
+However, adding this check in every component that uses the context isn't efficient. Instead, we can abstract this logic into a custom hook, `useCount`. This hook checks for the presence of the context and returns it. If the context is absent, it throws the descriptive error. This way, components can simply call `useCount` without directly dealing with the context validation.
+
+In summary, by creating a custom `useCount` hook, we've simplified the process of consuming context. This approach ensures that context is used correctly, providing clear error messages when issues arise.
+
+**Using Context for Caching with a Consumer Hook**
+
+In this exercise, we're delving into a different example to demonstrate caching using React's context. With the provided setup, the application caches Pokémon data. This allows for instantaneous retrieval of previously fetched Pokémon without additional server requests.
+
+However, an enhancement is needed: a UI list showing all cached Pokémon. The challenge lies in the fact that this UI is in a separate component. While lifting the state could be a potential solution, the goal is to use context.
+
+Here's the process:
+
+1. **Creating the Pokémon Cache Context**: A new context, `PokemonCacheContext`, is initialized. This context won't have a default value as there's no relevant default.
+
+2. **Creating a Provider Function**: The `PokemonCacheProvider` function is created. It will return the `PokemonCacheContext.Provider`, passing along any received props. The value for this provider will be the cache and a dispatch function, both of which are derived from `useReducer`.
+
+3. **Creating a Custom Hook**: To make consuming the context more straightforward, a custom hook, `usePokemonCache`, is introduced. This hook checks for the presence of the context. If absent, it throws a descriptive error. If present, it returns the cache and dispatch.
+
+4. **Rendering the Provider**: The `PokemonCacheProvider` wraps around any component needing access to the cache. This ensures the required context is present.
+
+5. **Using the Custom Hook**: In the components where the cache is needed, the `usePokemonCache` hook is invoked. This provides access to the cached Pokémon data.
+
+By following this method, state is effectively shared between components using context. While for such a simple example, lifting state might have been simpler, context proves invaluable in more complex scenarios. Using context in this manner ensures clean, maintainable code, allowing for state to be accessed across different components efficiently.

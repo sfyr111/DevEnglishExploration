@@ -1,0 +1,153 @@
+**Understanding the `useReducer` Hook in React**
+
+In this exercise, we're going to delve into the basic concepts of the `useReducer` hook in React, starting with a simple counter example. While you can skim through the provided background to understand the API and its capabilities, it's essential to approach this with a fresh mindset, especially if you're familiar with Redux.
+
+For those who have experience with Redux, I urge you to momentarily set aside that experience. We will eventually touch upon the traditional switch-statement reducer pattern commonly used in Redux. However, it's crucial to understand that this pattern is a convention, not a restriction imposed by the API itself.
+
+The current version of our simple counter features a button. Every time you click this button, the counter increments. This functionality is currently implemented using the `useState` hook. Your primary task is to refactor this to utilize the `useReducer` hook instead.
+
+Several extra credit challenges will allow you to explore different ways of using the `useReducer` API. These challenges are compact and aimed at helping you grasp the various facets of this hook.
+
+So, embark on this journey, experiment, and enjoy the learning process. Once you're done, you'll have a deeper understanding of how the `useReducer` hook functions and how you can leverage it in your React applications. See you post-exercise!
+
+**Transitioning from `useState` to `useReducer` in React**
+
+In this tutorial, we're switching from using the `useState` hook to the `useReducer` hook for a straightforward button functionality in React.
+
+Initially, there's a button that uses the `useState` hook to manage its state. We want to transition this to utilize the `useReducer` hook. Here's a step-by-step guide:
+
+1. **Initialization**:
+    - Instead of initializing with the `useState` hook, we call `useReducer` from React.
+    - The first argument to `useReducer` is a reducer function, not the initial state as with `useState`.
+
+2. **Defining the Reducer**:
+    - Instead of inlining the reducer function, it's often more readable to define it separately. For our example, we'll call this function `countReducer`.
+    - This reducer function will have two parameters: the current `state` and an `action`.
+    - The `state` refers to the current value of the count.
+    - The `action` is what we pass to the dispatch function, which we'll see soon.
+
+3. **Dispatch Function**:
+    - When using `useState`, we had an updater function, like `setCount`. With `useReducer`, this is called the dispatch function.
+    - Anything passed to this dispatch function becomes the second argument (`action`) for our reducer function.
+
+4. **Implementing the Reducer Logic**:
+    - For our simple button, the reducer function will just return the new state.
+    - So, in our `countReducer`, we'll just ignore the current state and return the new state (or `action`).
+
+5. **Final Steps**:
+    - The second argument to `useReducer` is the initial value of our state.
+    - With these changes, the button will continue to work as before, but now using the `useReducer` hook.
+
+**In Summary**:
+
+Transitioning from `useState` to `useReducer` involves rethinking how we manage state. While `useState` provides a direct way to set a new state, `useReducer` offers a more structured approach, especially beneficial for more complex state logic. In our example, we saw that for simple state updates, the reducer function can be quite straightforward. But the real power of `useReducer` becomes evident as state logic becomes more intricate.
+
+**Modifying the `useReducer` API to Accept a Step as an Action**
+
+In the extra credit section, the goal is to adjust the `useReducer` implementation so that it can handle a step for incrementing the count. Here's a breakdown of the changes made:
+
+1. **New API**:
+    - The new API involves a slight modification in the way we call our dispatch function. Instead of directly setting a new count value, we want to increment the count by a certain step.
+    - The dispatch function is renamed from `setCount` to `changeCount`.
+
+2. **Implementation**:
+    - Instead of passing the new count directly to the dispatch function, we pass the step by which we want to increment the count.
+    - This step is received in the reducer function as the `action`.
+
+3. **Reducer Logic**:
+    - In the `countReducer`, the `state` represents the current value of the count.
+    - The `action` (now representing the step) is added to the current count to derive the new count.
+    - The logic for updating the count is: `newCount = currentCount + step`.
+
+4. **Usage**:
+    - The `increment` function is modified to call the `changeCount` dispatch function with the desired step.
+    - This means, every time the button is clicked, the count will increment by the value of the step.
+
+5. **Validation**:
+    - To verify the updated implementation, the step value is changed to 2.
+    - Clicking the button now increments the count by twos, confirming that the new logic works as expected.
+
+**In Summary**:
+
+The `useReducer` hook provides a structured way to handle more complex state logic in React. By adjusting the dispatch function and the reducer's logic, we can easily modify the behavior of our component. In this example, the component was enhanced to handle increments by a variable step, showcasing the flexibility and power of the `useReducer` hook.
+
+**Simulating `setState` from Class Components with `useReducer`**
+
+The goal here is to replicate the behavior of `setState` from React's class components using the `useReducer` hook. In class components, the `setState` method allowed for partial state updates by merging the provided object with the existing state. Here's a breakdown of the changes made to simulate this behavior:
+
+1. **State Structure**:
+    - The state was initially a simple number. Now, it's transformed into an object with a `count` property. This aligns more with the typical state structure in class components.
+
+2. **Reducer Function**:
+    - The `countReducer` is updated to handle this new state structure. Instead of directly manipulating a number, it now deals with an object.
+    - The first argument, `state`, now represents this state object.
+    - The second argument, previously representing the step, is now more general and represents the "action". In this context, it's the new state or the changes we want to apply to the current state.
+
+3. **Merging State**:
+    - The core logic in the reducer combines the existing state with the new changes (action). This is analogous to how `setState` in class components would merge the provided object with the existing state.
+    - Using the spread operator (`...`), the existing state is spread into a new object, and then the action is spread. This means any properties in the action will override those in the state, achieving the desired merge effect.
+
+4. **Usage**:
+    - The `increment` function is updated. Instead of dispatching a simple number (the step), it now dispatches an object with a `count` property that represents the new count value.
+    - The `setCount` function from the `useReducer` hook is renamed to `setState` to mirror the naming from class components. This reinforces the idea that we're simulating the `setState` behavior.
+
+5. **Conclusion**:
+    - By restructuring the state and updating the reducer function, the behavior of `setState` from class components is effectively simulated using the `useReducer` hook.
+    - This approach highlights the flexibility of `useReducer` and how it can be tailored to mimic different state management strategies.
+
+    **Supporting Both Functional and Object APIs with `useReducer`**
+
+    The goal of this exercise is to modify the reducer function to support both the functional and object API patterns for updating the state, similar to the flexibility `setState` provided in class components.
+
+    Here's a breakdown of the changes and logic introduced:
+
+    1. **State Structure**:
+        - The state remains as an object with a `count` property, similar to the previous example.
+
+    2. **Function vs. Object API**:
+        - The new requirement is that the `setState` (or the dispatch function in the context of `useReducer`) can be called with either a function or an object.
+        - If called with a function, the function should receive the current state as its argument and return an object representing the new state changes.
+        - If called with an object, it represents the new state changes directly.
+
+    3. **Updating the Reducer**:
+        - The `countReducer` function is modified to handle this dual API. The key is to check if the action (second argument to the reducer) is a function or an object.
+        - Using the `typeof` operator, we can check if the action is a function.
+        - If it is a function, the action is invoked with the current state, and its return value (which should be an object) is spread into the new state.
+        - If it's not a function, it's assumed to be an object representing the state changes, which is then spread into the new state.
+
+    4. **Usage**:
+        - The `increment` function is now updated to call `setState` with a function that receives the current state and returns an object with the updated `count` value.
+        - This approach ensures that you always have the latest state when computing the new state, which can be especially useful in scenarios where state updates might be asynchronous or might depend on the previous state.
+
+    5. **Conclusion**:
+        - The modifications allow for a more flexible API, mimicking the behavior of `setState` from class components.
+        - It demonstrates the power and versatility of the `useReducer` hook and how it can be tailored to support various state management patterns and use-cases.
+
+        **Implementing Redux-style Dispatch with `useReducer`**
+
+        This exercise dives into a more Redux-like approach to state management using the `useReducer` hook in React.
+
+        Here's a breakdown:
+
+        1. **Switching to Redux-style API**:
+           - Instead of the previous methods where the action was either a function or an object, now it's an object with a `type` property, which is a common pattern in Redux.
+           - The dispatch function is aptly named `dispatch` to reflect the Redux terminology.
+
+        2. **Defining the Reducer**:
+           - A `switch` statement is used to handle different action types.
+           - For the `increment` type, the count from the current state is incremented by a `step` which is passed in the action.
+           - This pattern is extendable, making it easy to add more action types like `decrement` or any other actions in the future.
+
+        3. **Error Handling**:
+           - A default case is added to the `switch` statement that throws an error for unsupported action types. This is a safeguard against typos or unsupported actions and ensures that any misuse of the dispatch function is caught immediately.
+           - This is a pattern seen in many Redux reducers to ensure that actions dispatched are supported and expected.
+
+        4. **Flexibility**:
+           - The step for incrementing or decrementing can be passed in the action, giving flexibility in how much the count should change.
+           - While the example only has incrementing by one, the pattern allows for incrementing by any number, as demonstrated with the `action.step`.
+
+        5. **Conclusion**:
+           - The Redux-style approach with `useReducer` isn't a requirement, but it's a pattern that can be beneficial, especially as state management requirements grow more complex.
+           - The pattern is extendable and promotes clear, predictable state updates.
+           - It's also worth noting that while this pattern borrows heavily from Redux, it doesn't provide all the features and tools that Redux offers. However, for simpler state management tasks within a component or small app, it can be quite effective.
+
