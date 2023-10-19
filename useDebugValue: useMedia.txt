@@ -1,0 +1,11 @@
+**Exploring React's useDebugValue Hook**
+
+React's `useDebugValue` is a hook designed primarily for custom hooks, enabling developers to add labels to hooks within the React DevTools. It's not applicable for direct use inside components. The hook provides clarity, especially when multiple custom hooks are used, by labeling them for better insight within the DevTools.
+
+In the provided exercise, the user is introduced to a component with three `useMediaQuery` hooks. Without labels, it becomes difficult to discern each hook's purpose in the DevTools. By employing `useDebugValue`, labels can be added, displaying both the media query and its state.
+
+To utilize `useDebugValue`, developers simply call it within the custom hook, passing the desired label. For more dynamic labeling, a function can be passed, which returns the label based on certain conditions. This is particularly useful when the label's computation might be resource-intensive.
+
+An optimization exists for computationally expensive labels: the `useDebugValue` hook can accept a format function as its second argument. This ensures that the expensive computation is only done when necessary (i.e., when the DevTools are open), preventing unnecessary resource consumption for end-users.
+
+In summary, `useDebugValue` is a beneficial tool for developers using React DevTools, offering a clearer debugging experience by labeling custom hooks. It's essential to use it judiciously to ensure optimal performance.

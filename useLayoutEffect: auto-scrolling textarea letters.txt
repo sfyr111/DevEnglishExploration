@@ -1,0 +1,13 @@
+**Understanding React's useLayoutEffect Hook**
+
+React's `useLayoutEffect` is a hook that allows for specific dom manipulations before the browser paints the screen. The key difference between `useEffect` and `useLayoutEffect` can be visualized through the React hook flow diagram. While `useEffect` performs side effects after the screen is painted, `useLayoutEffect` ensures they happen beforehand.
+
+In the provided exercise, there's a chat box simulation where messages are added or removed. Every time a message is added, the window should scroll to display the latest message. When using `useEffect`, the new message appears before the automatic scrolling, which isn't a smooth user experience. This lag becomes more pronounced when simulating render slowness.
+
+However, switching to `useLayoutEffect` changes this behavior. When a message is added, it appears simultaneously with the automatic scrolling, ensuring the user sees only one smooth update.
+
+Examining the React hook flow diagram, it becomes clear why this happens. With `useEffect`, React first updates the DOM, then the browser paints the screen, followed by the side effects of `useEffect`. This results in two screen paints: once for the DOM update and once for the side effect. In contrast, `useLayoutEffect` runs its side effects right after the DOM update, but before the browser paints the screen, leading to a single, combined update.
+
+The rule of thumb is to use `useEffect` for most scenarios, reserving `useLayoutEffect` for instances where the side effect makes observable changes to the DOM that the browser must paint immediately.
+
+In essence, the `useLayoutEffect` hook ensures timely DOM manipulations, providing a better user experience, especially when the side effect's impact on the screen is noticeable.

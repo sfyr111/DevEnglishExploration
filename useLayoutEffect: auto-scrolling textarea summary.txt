@@ -1,0 +1,4 @@
+**React's useLayoutEffect Hook Explained**
+
+React offers the `useLayoutEffect` hook for timely DOM adjustments before the browser renders the visuals. Differing from `useEffect`, which acts after rendering, `useLayoutEffect` intervenes beforehand. The exercise showcases a chat application. With `useEffect`, when adding a message, a lag is evident, more so with induced delays. But, using `useLayoutEffect`, messages and automatic scrolling synchronize, enhancing user experience. In simple terms, for most tasks, employ `useEffect`. However, for immediate, visible DOM changes, opt for `useLayoutEffect`.
+
